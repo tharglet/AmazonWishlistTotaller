@@ -18,7 +18,7 @@ function priceToVal(priceText) {
     var res = Object();
     if(priceText.match("^[0-9]")) {
         res.currency = "?";
-        res.price = parseInt(parseFloat(priceText.replace(",",""))*100);
+        res.price = parseInt(priceText.replace(",","").replace(".", ""));
     } else {
         var i = 0;
         var prefix = "";
@@ -28,7 +28,7 @@ function priceToVal(priceText) {
         }
         prefix = prefix.trim();
         res.currency = prefix;
-        res.price = parseInt(parseFloat(priceText.substr(i).replace(",",""))*100);
+        res.price = parseInt(priceText.substr(i).replace(",","").replace(".",""));
     }
     return res;
 }
