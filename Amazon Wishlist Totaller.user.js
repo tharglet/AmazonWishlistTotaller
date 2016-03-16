@@ -27,19 +27,27 @@ function isAvailable(priceText) {
 
 function priceToVal(priceText) {
     var res = {};
+    var multiplyFactor, prefix, i, price;
     if(priceText.match("^[0-9]")) {
         res.currency = "?";
         res.price = parseInt(priceText.replace(",","").replace(".", ""));
     } else {
-        var i = 0;
-        var prefix = "";
+        i = 0;
+        prefix = "";
         while(!priceText[i].match("[0-9]") && i < priceText.length) {
             prefix += priceText[i];
             i++;
         }
         prefix = prefix.trim();
         res.currency = prefix;
-        res.price = parseInt(priceText.substr(i).replace(",","").replace(".",""));
+        price = priceText.substr(i).replace(",","");
+        if(priceText.indexOf(".") > 0) {
+            multiplyFactor = 1;
+        } else {
+            multiplyFactor = 100;
+        }
+        console.log(price + ","+multiplyFactor);
+        res.price = parseInt(price.replace(".", "")) * multiplyFactor;
     }
     return res;
 }
@@ -155,5 +163,5 @@ $().ready(function() {
         totalPrices += '<ul style="color:black;list-style:none;margin:5px"><li style="list-style-type:none">' + unavailableCount + '</li></ul>';
     }
     var totalText = totalTextPrefix + totalPricesLabels + totalTextMiddle + totalPrices + totalTextPostfix;
-    $(totalText).prependTo("#item-page-wrapper");
+    $(totalText).appendTo("#control-bar");
 });
