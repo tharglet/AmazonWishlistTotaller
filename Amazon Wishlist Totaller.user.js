@@ -60,6 +60,7 @@ $().ready(function() {
     $("div[id^='itemInfo']").each(function(index, ele) {
         var mainPrice = $(this).find("span[id^='itemPrice']");
         var offerPrice = $(this).find("span.itemUsedAndNewPrice");
+        var needs = parseInt($(this).find("span[id^='itemRequested_']").text().trim()) - parseInt($(this).find("span[id^='itemPurchased_']").text().trim());
         if(mainPrice.length > 0) {
             mainPrice = mainPrice.first();
             var priceText = mainPrice.text().trim();
@@ -70,6 +71,7 @@ $().ready(function() {
                         offerPrice = offerPrice.first();
                         var offerPriceText = offerPrice.text().trim();
                         var res = priceToVal(offerPriceText);
+                        res.price *= needs;
                         if(prices["offer"][res.currency]) {
                             prices["offer"][res.currency] += res.price;
                         } else {
@@ -83,6 +85,7 @@ $().ready(function() {
                     }
                 } else {
                     var res = priceToVal(priceText);
+                    res.price *= needs;
                     if(prices["main"][res.currency]) {
                         prices["main"][res.currency] += res.price;
                     } else {
