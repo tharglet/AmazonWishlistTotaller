@@ -5,17 +5,28 @@
 // @version      0.1
 // @description  Totals your wishlists
 // @author       Tharglet
-// @match        *://www.amazon.co.uk/gp/registry/wishlist/*
-// @match        *://www.amazon.com/gp/registry/wishlist/*
-// @match        *://www.amazon.in/gp/registry/wishlist/*
+// @match        *://www.amazon.tld/gp/registry/wishlist/*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
 // @grant        none
 // ==/UserScript==
 /* jshint -W097 */
 'use strict';
 
+function isAvailable(priceText) {
+	switch(priceText) {
+		case 'Unavailable':                //en
+		case 'Non disponible':             //fr
+		case 'No disponible':              //es
+		case 'Nicht verfügbar':            //de
+		case 'この商品は現在取り扱っていません':  //jp
+			return false;
+		default:
+			return true;
+	}
+}
+
 function priceToVal(priceText) {
-    var res = Object();
+    var res = {};
     if(priceText.match("^[0-9]")) {
         res.currency = "?";
         res.price = parseInt(priceText.replace(",","").replace(".", ""));
@@ -36,16 +47,16 @@ function priceToVal(priceText) {
 $().ready(function() {
     var unavailableCount = 0;
     var prices = Array();
-    prices["main"] = Object();
-    prices["offer"] = Object();
-    prices["combined"] = Object();
+    prices["main"] = {};
+    prices["offer"] = {};
+    prices["combined"] = {};
     $("div[id^='itemInfo']").each(function(index, ele) {
         var mainPrice = $(this).find("span[id^='itemPrice']");
         var offerPrice = $(this).find("span.itemUsedAndNewPrice");
         if(mainPrice.length > 0) {
             mainPrice = mainPrice.first();
             var priceText = mainPrice.text().trim();
-            if(priceText != "Unavailable") {
+            if(isAvailable(priceText)) {
                 if(priceText.length == 0) {
                     //No main price
                     if(offerPrice.length > 0) {
