@@ -46,7 +46,6 @@ function priceToVal(priceText) {
         } else {
             multiplyFactor = 100;
         }
-        console.log(price + ","+multiplyFactor);
         res.price = parseInt(price.replace(".", "")) * multiplyFactor;
     }
     return res;
